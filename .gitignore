@@ -2,6 +2,9 @@
 /dist
 /node_modules
 
+# local docker volumes 
+/mysql 
+
 # Logs
 logs
 *.log
