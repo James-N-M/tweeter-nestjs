@@ -5,9 +5,12 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Post('login')
+  // DONT FORGET ABOUT CONTROLLER ROUTE NAMES /controllername/thing
+  @Post('auth/login')
   login(): any {
-    return {};
+    return {
+      'access_token': "thisisarandomaccesstokenplaceholder1234556789"
+    };
   }
 
   @Get('/products')
