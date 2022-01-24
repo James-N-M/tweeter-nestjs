@@ -4,9 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import User from './user.entity';
 import CreateUserDto from './dtos/createUser.dto';
 
-// This should be a real class/interface representing a user entity
-export type TestUser = any;
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -26,5 +23,13 @@ export class UsersService {
       return user;
     }
     throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
+  }
+
+  async getById(id: number) {
+    const user = await this.usersRepository.findOne({ id });
+    if (user) {
+      return user;
+    }
+    throw new HttpException('User with this id does not exist', HttpStatus.NOT_FOUND);
   }
 }

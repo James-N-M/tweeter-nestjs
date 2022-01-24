@@ -4,13 +4,13 @@ import { AuthService } from './auth/auth.service';
 import RegisterDto from './auth/dto/register.dto';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
+import RequestWithUser from './auth/requestWithUser.interface';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService, private authService: AuthService) {}
 
   @Post('auth/register')
-  
   async register(@Body() registrationData: RegisterDto) {
     return this.authService.register(registrationData);
   }
@@ -23,9 +23,10 @@ export class AppController {
   }
 
   // JWT guarded route
+  // pass value returned as authorization bearer token 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@Request() req) {
+  getProfile(@Request() req: RequestWithUser) {
     return req.user;
   }
 

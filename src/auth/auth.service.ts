@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import User from 'src/users/user.entity';
 import { UsersService } from '../users/users.service';
 import RegisterDto from './dto/register.dto';
 
@@ -19,15 +20,16 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+  async login(user: User) {
+    const payload: TokenPayload = { userId: user.id };// { username: user.username, sub: user.id };
+    
     return {
       access_token: this.jwtService.sign(payload),
     };
   }
 
   public async register(registrationData: RegisterDto) {
-    const hashedPassword = 'testpassword'; // await bcrypt.hash(registrationData.password, 10);
+    const hashedPassword = 'password'; // await bcrypt.hash(registrationData.password, 10);
     try {
       const createdUser = await this.usersService.create({
         ...registrationData,

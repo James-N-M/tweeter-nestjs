@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
- 
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Tweet } from 'src/tweets/entities/tweet.entity'; 
+
 @Entity()
 class User {
   @PrimaryGeneratedColumn()
@@ -16,6 +17,10 @@ class User {
  
   @Column()
   public password: string;
+
+  @OneToMany(() => Tweet, (tweet: Tweet) => tweet.user)
+  public tweets: Tweet[];
+  
 }
  
 export default User;
