@@ -12,6 +12,9 @@ export class Tweet {
     @Column('tinyint', { default: 1 })
     public public: boolean;    
 
+    @Column({nullable: true})
+    public image: string;
+
     @ManyToOne(() => User, (user: User) => user.tweets)
     public user: User;
 }
