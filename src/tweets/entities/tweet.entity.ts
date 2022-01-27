@@ -9,6 +9,9 @@ export class Tweet {
     @Column('text')
     public text: string;
 
+    @Column('tinyint', { default: 1 })
+    public public: boolean;    
+
     @ManyToOne(() => User, (user: User) => user.tweets)
     public user: User;
 }
