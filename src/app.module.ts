@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { TweetsModule } from './tweets/tweets.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { TweetsModule } from './tweets/tweets.module';
     }),
     UsersModule,
     AuthModule,
-    TweetsModule
+    TweetsModule,
+    CommentsModule
     ],
   controllers: [AppController],
   providers: [AppService],

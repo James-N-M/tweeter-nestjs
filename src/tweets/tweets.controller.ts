@@ -8,7 +8,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { v4 as uuidv4 } from 'uuid';
 import { diskStorage } from 'multer';
 import path = require('path');
-import { fileURLToPath } from 'url';
 
 export const storage = {
   storage: diskStorage({
@@ -20,7 +19,6 @@ export const storage = {
           cb(null, `${filename}${extension}`)
       }
   })
-
 }
 
 @Controller('tweets')

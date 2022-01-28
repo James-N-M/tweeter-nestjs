@@ -7,6 +7,7 @@ import { Tweet } from './entities/tweet.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Tweet])],
   controllers: [TweetsController],
-  providers: [TweetsService]
+  providers: [TweetsService],
+  exports: [TweetsService]
 })
 export class TweetsModule {}

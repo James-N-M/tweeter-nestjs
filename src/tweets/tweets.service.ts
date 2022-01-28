@@ -13,10 +13,10 @@ export class TweetsService {
     private tweetsRepository: Repository<Tweet>
   ) {}
 
-  async create(tweet: CreateTweetDto, user: User) {
+  async create(createTweetDto: CreateTweetDto, user: User) {
     const newTweet = await this.tweetsRepository.create(
       {
-        ...tweet,
+        ...createTweetDto,
         user: user
       });
     await this.tweetsRepository.save(newTweet);
@@ -30,8 +30,8 @@ export class TweetsService {
     return `This action returns all tweets`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tweet`;
+  async findOne(id: number) {
+    return await this.tweetsRepository.findOne({ id });
   }
 
   update(id: number, updateTweetDto: UpdateTweetDto) {

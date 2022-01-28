@@ -20,7 +20,6 @@ class User {
 
   @OneToMany(() => Tweet, (tweet: Tweet) => tweet.user)
   public tweets: Tweet[];
-  
 }
  
 export default User;
