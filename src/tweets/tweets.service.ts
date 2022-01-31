@@ -26,8 +26,8 @@ export class TweetsService {
     return newTweet;
   }
 
-  findAll() {
-    return `This action returns all tweets`;
+  async findAll() {
+    return await this.tweetsRepository.find({relations: ['comments']});
   }
 
   async findOne(id: number) {
