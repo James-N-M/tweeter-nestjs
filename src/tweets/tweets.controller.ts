@@ -8,6 +8,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { v4 as uuidv4 } from 'uuid';
 import { diskStorage } from 'multer';
 import path = require('path');
+import { BookmarksService } from 'src/bookmarks/bookmarks.service';
+import { CreateBookmarkDto } from 'src/bookmarks/dto/create-bookmark.dto';
 
 export const storage = {
   storage: diskStorage({
@@ -23,7 +25,8 @@ export const storage = {
 
 @Controller('tweets')
 export class TweetsController {
-  constructor(private readonly tweetsService: TweetsService) {}
+  constructor(private readonly tweetsService: TweetsService,
+    private readonly bookmarksService: BookmarksService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -37,6 +40,18 @@ export class TweetsController {
       return this.tweetsService.create(tweet, req.user);
     }
     return this.tweetsService.create(tweet, req.user);
+  }
+
+  @Post(':id/bookmark')
+  @UseGuards(JwtAuthGuard)
+  async bookmark(@Param('id') id: number, @Req() req: RequestWithUser) {
+
+    let bookmark: CreateBookmarkDto = {
+      tweetId: id,
+      userId: req.user.id
+    };
+
+    return this.bookmarksService.create(bookmark);
   }
 
   @Get()
