@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Tweet } from 'src/tweets/entities/tweet.entity'; 
 
 @Entity()
@@ -20,6 +20,10 @@ class User {
 
   @OneToMany(() => Tweet, (tweet: Tweet) => tweet.user)
   public tweets: Tweet[];
+
+  @ManyToMany(type => Tweet)
+  @JoinTable()
+  bookmarks: Tweet[];
 }
  
 export default User;

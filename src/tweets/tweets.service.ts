@@ -10,7 +10,9 @@ import { Tweet } from './entities/tweet.entity';
 export class TweetsService {
   constructor(
     @InjectRepository(Tweet)
-    private tweetsRepository: Repository<Tweet>
+    private readonly tweetsRepository: Repository<Tweet>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async create(createTweetDto: CreateTweetDto, user: User) {
@@ -40,5 +42,24 @@ export class TweetsService {
 
   remove(id: number) {
     return `This action removes a #${id} tweet`;
+  }
+
+  async bookmark(userId: number, tweetId: number) {
+    let tweet = await this.tweetsRepository.findOne({id: tweetId});
+    const user = await this.userRepository.findOne(userId, { relations: ['bookmarks']});
+
+    const isNewBookmark = user.bookmarks.findIndex(_tweet => _tweet.id === tweet.id) < 0; 
+    if(isNewBookmark) {
+      user.bookmarks.push(tweet);
+      await this.userRepository.save(user);
+    }
+
+    return {tweet};
+  }
+
+  async findAllBookmarks(userId: number) {
+    const bookmarks = await (await this.userRepository.findOne(userId, { relations: ['bookmarks']})).bookmarks;
+
+    return bookmarks;
   }
 }
