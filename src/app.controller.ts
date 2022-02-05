@@ -1,4 +1,12 @@
-import { Controller, Request, Get, Post, UseGuards, Body } from '@nestjs/common';
+import {
+  Controller,
+  Request,
+  Get,
+  Post,
+  UseGuards,
+  Body,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import RegisterDto from './auth/dto/register.dto';
@@ -6,9 +14,13 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import RequestWithUser from './auth/requestWithUser.interface';
 
+@ApiTags('application')
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService, private authService: AuthService) {}
+  constructor(
+    private readonly appService: AppService,
+    private authService: AuthService,
+  ) {}
 
   @Post('auth/register')
   async register(@Body() registrationData: RegisterDto) {
@@ -30,13 +42,8 @@ export class AppController {
     return req.user;
   }
 
-  @Get('/products')
-  getProducts() {
-    return this.appService.getProducts();
-  }
-
   @Get()
   getHello() {
-    return {status: "Tweeter NestJS Api running"}
+    return { status: 'Tweeter NestJS Api running' };
   }
 }

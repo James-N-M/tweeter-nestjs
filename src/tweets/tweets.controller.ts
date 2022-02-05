@@ -8,6 +8,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { v4 as uuidv4 } from 'uuid';
 import { diskStorage } from 'multer';
 import path = require('path');
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 export const storage = {
   storage: diskStorage({
@@ -21,11 +22,13 @@ export const storage = {
   })
 }
 
+@ApiTags('tweets')
 @Controller('tweets')
 export class TweetsController {
   constructor(private readonly tweetsService: TweetsService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create tweet' })
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file', storage))
   create(@UploadedFile() file, @Body() tweet: CreateTweetDto, @Req() req: RequestWithUser) {
@@ -40,6 +43,8 @@ export class TweetsController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all tweets' })
+  @ApiResponse({ status: 200, description: 'Return all tweets.' })
   findAll() {
     return this.tweetsService.findAll();
   }
@@ -54,6 +59,11 @@ export class TweetsController {
     return this.tweetsService.remove(+id);
   }
 
+  @ApiOperation({ summary: 'Bookmark tweet' })
+  @ApiResponse({
+    status: 201,
+    description: 'The tweet has been successfully bookmarked.',
+  })
   @Post(':id/bookmark')
   @UseGuards(JwtAuthGuard)
   async favorite(@Param('id') id: string, @Req() req: RequestWithUser) {
@@ -61,6 +71,8 @@ export class TweetsController {
   }
 
   @Get('bookmarks')
+  @ApiOperation({ summary: 'Get all current user bookmarks' })
+  @ApiResponse({ status: 200, description: 'Return all bookmarked tweets.' })
   @UseGuards(JwtAuthGuard)
   async bookmarks(@Req() req: RequestWithUser) {
     return await this.tweetsService.findAllBookmarks(req.user.id); 
