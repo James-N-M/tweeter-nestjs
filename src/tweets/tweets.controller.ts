@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { TweetsService } from './tweets.service';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
@@ -12,15 +24,16 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 export const storage = {
   storage: diskStorage({
-      destination: './uploads/tweetimages',
-      filename: (req, file, cb) => {
-          const filename: string = path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
-          const extension: string = path.parse(file.originalname).ext;
+    destination: './uploads/tweetimages',
+    filename: (req, file, cb) => {
+      const filename: string =
+        path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+      const extension: string = path.parse(file.originalname).ext;
 
-          cb(null, `${filename}${extension}`)
-      }
-  })
-}
+      cb(null, `${filename}${extension}`);
+    },
+  }),
+};
 
 @ApiTags('tweets')
 @Controller('tweets')
@@ -31,13 +44,15 @@ export class TweetsController {
   @ApiOperation({ summary: 'Create tweet' })
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file', storage))
-  create(@UploadedFile() file, @Body() tweet: CreateTweetDto, @Req() req: RequestWithUser) {
-
+  create(
+    @UploadedFile() file,
+    @Body() tweet: CreateTweetDto,
+    @Req() req: RequestWithUser,
+  ) {
     tweet.public = Boolean(tweet.public);
-    
-    if(file) {
+
+    if (file) {
       tweet.image = file.filename;
-      return this.tweetsService.create(tweet, req.user);
     }
     return this.tweetsService.create(tweet, req.user);
   }
@@ -75,6 +90,6 @@ export class TweetsController {
   @ApiResponse({ status: 200, description: 'Return all bookmarked tweets.' })
   @UseGuards(JwtAuthGuard)
   async bookmarks(@Req() req: RequestWithUser) {
-    return await this.tweetsService.findAllBookmarks(req.user.id); 
+    return await this.tweetsService.findAllBookmarks(req.user.id);
   }
 }

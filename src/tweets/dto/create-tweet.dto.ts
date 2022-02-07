@@ -1,5 +1,5 @@
 export class CreateTweetDto {
-    text: string;
-    public: boolean; 
-    image?: string;
+  text: string;
+  public: boolean;
+  image?: string;
 }

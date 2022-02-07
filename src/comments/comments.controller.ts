@@ -8,13 +8,32 @@ import {
   Delete,
   UseGuards,
   Req,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { diskStorage } from 'multer';
+import path = require('path');
+import { v4 as uuidv4 } from 'uuid';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import RequestWithUser from 'src/auth/requestWithUser.interface';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+
+export const storage = {
+  storage: diskStorage({
+    destination: './uploads/tweet-comment-images',
+    filename: (req, file, cb) => {
+      const filename: string =
+        path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+      const extension: string = path.parse(file.originalname).ext;
+
+      cb(null, `${filename}${extension}`);
+    },
+  }),
+};
 
 @ApiTags('comments')
 @Controller('comments')
@@ -22,11 +41,17 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create comment' })
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file', storage))
   create(
+    @UploadedFile() file,
     @Body() createCommentDto: CreateCommentDto,
     @Req() req: RequestWithUser,
   ) {
+    if (file) {
+      createCommentDto.image = file.filename;
+    }
     return this.commentsService.create(createCommentDto, req.user);
   }
 

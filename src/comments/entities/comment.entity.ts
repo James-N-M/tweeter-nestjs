@@ -1,23 +1,33 @@
-import { Tweet } from "src/tweets/entities/tweet.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Tweet } from 'src/tweets/entities/tweet.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Comment {
-    @PrimaryGeneratedColumn()
-    public id?: number;
+  @PrimaryGeneratedColumn()
+  public id?: number;
 
-    @Column('text')
-    public text: string;
+  @Column('text')
+  public text: string;
 
-    @ManyToOne(() => Tweet, (tweet: Tweet) => tweet.comments)
-    public tweet: Tweet;
+  @ManyToOne(() => Tweet, (tweet: Tweet) => tweet.comments)
+  public tweet: Tweet;
 
-    @Column()
-    public userId: number;
+  @Column({ nullable: true })
+  public image: string;
 
-    @CreateDateColumn()
-    created_at: Date;
+  @Column()
+  public userId: number;
 
-    @UpdateDateColumn()
-    updated_at: Date;
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }
