@@ -12,7 +12,7 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import path = require('path');
 import { v4 as uuidv4 } from 'uuid';
@@ -63,6 +63,17 @@ export class CommentsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.commentsService.findOne(+id);
+  }
+
+  @ApiOperation({ summary: 'Like comment' })
+  @ApiResponse({
+    status: 201,
+    description: 'The comment has been successfully liked.',
+  })
+  @Post(':id/like')
+  @UseGuards(JwtAuthGuard)
+  async like(@Param('id') id: string, @Req() req: RequestWithUser) {
+    return await this.commentsService.like(req.user.id, parseInt(id));
   }
 
   @Patch(':id')

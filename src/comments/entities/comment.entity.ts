@@ -1,4 +1,5 @@
 import { Tweet } from 'src/tweets/entities/tweet.entity';
+import User from 'src/users/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -11,7 +12,7 @@ import {
 @Entity()
 export class Comment {
   @PrimaryGeneratedColumn()
-  public id?: number;
+  public id: number;
 
   @Column('text')
   public text: string;
@@ -22,8 +23,11 @@ export class Comment {
   @Column({ nullable: true })
   public image: string;
 
-  @Column()
-  public userId: number;
+  @ManyToOne(() => User, (user: User) => user.comments)
+  public user: User;
+
+  @Column({default: 0})
+  likeCount: number;
 
   @CreateDateColumn()
   created_at: Date;

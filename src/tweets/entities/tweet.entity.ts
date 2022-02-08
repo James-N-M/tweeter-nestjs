@@ -23,12 +23,13 @@ export class Tweet {
     @OneToMany(() => Comment, (comment: Comment) => comment.tweet)
     public comments: Comment[];
 
+    @Column({default: 0})
+    likeCount: number;
+    
     @CreateDateColumn()
     created_at: Date;
 
     @UpdateDateColumn()
     updated_at: Date;
 
-    @Column({default: 0})
-    likeCount: number;
 }

@@ -46,11 +46,11 @@ export class TweetsService {
 
   async like(userId: number, tweetId: number) {
     let tweet = await this.tweetsRepository.findOne({id: tweetId});
-    const user = await this.userRepository.findOne(userId, { relations: ['likes']});
+    const user = await this.userRepository.findOne(userId, { relations: ['tweetLikes']});
 
-    const isNewLike = user.likes.findIndex(_tweet => _tweet.id === tweet.id) < 0; 
+    const isNewLike = user.tweetLikes.findIndex(_tweet => _tweet.id === tweet.id) < 0; 
     if(isNewLike) {
-      user.likes.push(tweet);
+      user.tweetLikes.push(tweet);
       tweet.likeCount++;
 
       await this.userRepository.save(user);
@@ -62,12 +62,12 @@ export class TweetsService {
 
   async unLike(userId: number, tweetId: number) {
     let tweet = await this.tweetsRepository.findOne({id: tweetId});
-    const user = await this.userRepository.findOne(userId, { relations: ['likes']});
+    const user = await this.userRepository.findOne(userId, { relations: ['tweetLikes']});
 
-    const deleteIndex = user.likes.findIndex(_tweet => _tweet.id === tweet.id); 
+    const deleteIndex = user.tweetLikes.findIndex(_tweet => _tweet.id === tweet.id); 
     
     if(deleteIndex >= 0) {
-      user.likes.splice(deleteIndex, 1);
+      user.tweetLikes.splice(deleteIndex, 1);
       tweet.likeCount--;
 
       await this.userRepository.save(user);

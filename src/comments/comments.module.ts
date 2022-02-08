@@ -4,11 +4,14 @@ import { CommentsController } from './comments.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
 import { TweetsModule } from 'src/tweets/tweets.module';
+import { UsersModule } from 'src/users/users.module';
+import User from 'src/users/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Comment]),
-    TweetsModule
+    TypeOrmModule.forFeature([Comment, User]),
+    TweetsModule,
+    UsersModule
   ],
   controllers: [CommentsController],
   providers: [CommentsService],
