@@ -24,6 +24,10 @@ class User {
   @ManyToMany(type => Tweet)
   @JoinTable()
   bookmarks: Tweet[];
+
+  @ManyToMany(type => Tweet)
+  @JoinTable()
+  likes: Tweet[];
 }
  
 export default User;

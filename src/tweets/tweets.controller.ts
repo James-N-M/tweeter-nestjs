@@ -81,7 +81,7 @@ export class TweetsController {
   })
   @Post(':id/bookmark')
   @UseGuards(JwtAuthGuard)
-  async favorite(@Param('id') id: string, @Req() req: RequestWithUser) {
+  async bookmark(@Param('id') id: string, @Req() req: RequestWithUser) {
     return await this.tweetsService.bookmark(req.user.id, parseInt(id));
   }
 
@@ -91,5 +91,27 @@ export class TweetsController {
   @UseGuards(JwtAuthGuard)
   async bookmarks(@Req() req: RequestWithUser) {
     return await this.tweetsService.findAllBookmarks(req.user.id);
+  }
+
+  @ApiOperation({ summary: 'Like tweet' })
+  @ApiResponse({
+    status: 201,
+    description: 'The tweet has been successfully liked.',
+  })
+  @Post(':id/like')
+  @UseGuards(JwtAuthGuard)
+  async like(@Param('id') id: string, @Req() req: RequestWithUser) {
+    return await this.tweetsService.like(req.user.id, parseInt(id));
+  }
+
+  @ApiOperation({ summary: 'Unlike tweet' })
+  @ApiResponse({
+    status: 201,
+    description: 'The tweet has been successfully unliked.',
+  })
+  @Delete(':id/unlike')
+  @UseGuards(JwtAuthGuard)
+  async unLike(@Param('id') id: string, @Req() req: RequestWithUser) {
+    return await this.tweetsService.unLike(req.user.id, parseInt(id));
   }
 }

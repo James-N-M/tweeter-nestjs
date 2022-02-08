@@ -44,6 +44,39 @@ export class TweetsService {
     return `This action removes a #${id} tweet`;
   }
 
+  async like(userId: number, tweetId: number) {
+    let tweet = await this.tweetsRepository.findOne({id: tweetId});
+    const user = await this.userRepository.findOne(userId, { relations: ['likes']});
+
+    const isNewLike = user.likes.findIndex(_tweet => _tweet.id === tweet.id) < 0; 
+    if(isNewLike) {
+      user.likes.push(tweet);
+      tweet.likeCount++;
+
+      await this.userRepository.save(user);
+      tweet = await this.tweetsRepository.save(tweet);
+    }
+
+    return {tweet};
+  }
+
+  async unLike(userId: number, tweetId: number) {
+    let tweet = await this.tweetsRepository.findOne({id: tweetId});
+    const user = await this.userRepository.findOne(userId, { relations: ['likes']});
+
+    const deleteIndex = user.likes.findIndex(_tweet => _tweet.id === tweet.id); 
+    
+    if(deleteIndex >= 0) {
+      user.likes.splice(deleteIndex, 1);
+      tweet.likeCount--;
+
+      await this.userRepository.save(user);
+      tweet = await this.tweetsRepository.save(tweet);
+    }
+
+    return {tweet};
+  }
+
   async bookmark(userId: number, tweetId: number) {
     let tweet = await this.tweetsRepository.findOne({id: tweetId});
     const user = await this.userRepository.findOne(userId, { relations: ['bookmarks']});

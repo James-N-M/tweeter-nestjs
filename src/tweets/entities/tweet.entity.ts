@@ -28,4 +28,7 @@ export class Tweet {
 
     @UpdateDateColumn()
     updated_at: Date;
+
+    @Column({default: 0})
+    likeCount: number;
 }
