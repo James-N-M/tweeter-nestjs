@@ -15,6 +15,9 @@ class User {
  
   @Column()
   public username: string;
+
+  @Column()
+  public bio: string;
  
   @Column()
   public password: string;
