@@ -16,7 +16,7 @@ class User {
   @Column()
   public username: string;
 
-  @Column()
+  @Column({nullable: true})
   public bio: string;
  
   @Column()
