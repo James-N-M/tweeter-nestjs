@@ -7,18 +7,24 @@ import { ProfilesService } from './profiles.service';
 @ApiTags('profiles')
 @Controller('profiles')
 export class ProfilesController {
- constructor(private readonly profilesService: ProfilesService) {}
+  constructor(private readonly profilesService: ProfilesService) {}
 
   @ApiOperation({ summary: 'Get profile' })
   @ApiResponse({ status: 200, description: 'Return a users profile.' })
   @Get(':username')
-  async getProfile(@Req() req: RequestWithUser, @Param('username') username: string) {
+  async getProfile(
+    @Req() req: RequestWithUser,
+    @Param('username') username: string,
+  ) {
     return await this.profilesService.findProfile(null, username);
   }
 
   @Post(':username/follow')
   @UseGuards(JwtAuthGuard)
-  async follow(@Req() req: RequestWithUser, @Param('username') username: string) {
-    return await this.profilesService.follow(req.user, username); 
+  async follow(
+    @Req() req: RequestWithUser,
+    @Param('username') username: string,
+  ) {
+    return await this.profilesService.follow(req.user, username);
   }
 }
