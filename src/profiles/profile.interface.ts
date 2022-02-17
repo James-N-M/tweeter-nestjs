@@ -1,6 +1,9 @@
+import User from "src/users/user.entity";
+
 export interface Profile {
     username: string;
     bio: string;
-    // image?: string;
     isFollowing?: boolean;
+    followers?: User[],
+    following?: User[]
   }

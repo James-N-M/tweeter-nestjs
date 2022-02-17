@@ -24,6 +24,8 @@ export class ProfilesService {
     const profile: Profile = {
       username: user.username,
       bio: user.bio,
+      followers: [],
+      following: []
     };
 
     // Is the current user following user
@@ -32,42 +34,23 @@ export class ProfilesService {
       followingId: user.id,
     });
 
+    // following 
+    const followingIds = await (await this.followsRepository.find({ followerId: user.id })).map((record) => record.followingId);
+    const following = await this.userRepository.findByIds(followingIds);
+
+    // followers 
+    const followerIds = await (await this.followsRepository.find({ followingId: user.id })).map((record) => record.followerId);
+    const followers = await this.userRepository.findByIds(followerIds);
+
     if (currentUserId) {
       profile.isFollowing = !!follows;
     }
 
-    const qb = await getRepository(Follows)
-      .createQueryBuilder('follows')
-      .where('follows.followerId = :followerId', { followerId: user.id })
-      .orWhere('follows.followingId = :followingId', {
-        followingId: user.id,
-      });
-
-    const followersAndFollowing = await qb.getMany();
-
-    const followingIds = followersAndFollowing
-      .map((record) => {
-        if(record.followerId === user.id) {
-          return record.followerId
-        }
-      });
-      
-    const followerIds = followersAndFollowing
-      .map((record) => {
-        if(record.followingId === user.id) {
-          return record.followingId;
-        }
-      }); 
-
-    const followers = await this.userRepository.findByIds(followerIds);
-
-    const following = await this.userRepository.findByIds(followingIds);
-
     return {
       profile,
-      followers,
-      following
-    };
+      following,
+      followers
+    }
   }
 
   async follow(currentUser, username: string) {
