@@ -33,7 +33,7 @@ export class ProfilesService {
     });
 
     if (currentUserId) {
-      profile.following = !!follows;
+      profile.isFollowing = !!follows;
     }
 
     const qb = await getRepository(Follows)
@@ -45,14 +45,28 @@ export class ProfilesService {
 
     const followersAndFollowing = await qb.getMany();
 
-    // to get following followerId = userid, return followingId get users 
-    const followingIds = followersAndFollowing.
+    const followingIds = followersAndFollowing
+      .map((record) => {
+        if(record.followerId === user.id) {
+          return record.followerId
+        }
+      });
+      
+    const followerIds = followersAndFollowing
+      .map((record) => {
+        if(record.followingId === user.id) {
+          return record.followingId;
+        }
+      }); 
 
+    const followers = await this.userRepository.findByIds(followerIds);
 
+    const following = await this.userRepository.findByIds(followingIds);
 
     return {
       profile,
-      followersAndFollowing,
+      followers,
+      following
     };
   }
 
@@ -81,7 +95,7 @@ export class ProfilesService {
     const profile: Profile = {
       username: followingUser.username,
       bio: followingUser.bio,
-      following: true,
+      isFollowing: true,
     };
 
     return profile;
