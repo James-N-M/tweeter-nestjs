@@ -28,6 +28,21 @@ export class TweetsService {
     return newTweet;
   }
 
+  async retweet(tweetId: number, user: User) {
+    const tweet = await this.tweetsRepository.findOne({ id: tweetId });
+
+    const newTweet = await this.tweetsRepository.create(
+      {
+        ...tweet,
+        originalTweetId: tweetId,
+        user: user
+      });
+
+    delete newTweet.user;
+
+    return newTweet;
+  }
+
   async findAll() {
     return await this.tweetsRepository.find({relations: ['comments']});
   }

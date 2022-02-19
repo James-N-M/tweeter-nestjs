@@ -12,11 +12,12 @@ export class ProfilesController {
   @ApiOperation({ summary: 'Get profile' })
   @ApiResponse({ status: 200, description: 'Return a users profile.' })
   @Get(':username')
+  @UseGuards(JwtAuthGuard)
   async getProfile(
     @Req() req: RequestWithUser,
     @Param('username') username: string,
   ) {
-    return await this.profilesService.findProfile(null, username);
+    return await this.profilesService.findProfile(req.user.id, username);
   }
 
   @Post(':username/follow')

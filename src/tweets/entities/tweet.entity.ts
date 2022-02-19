@@ -1,7 +1,7 @@
 import User from 'src/users/user.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
 
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
 
 @Entity()
 export class Tweet {
@@ -16,6 +16,13 @@ export class Tweet {
 
     @Column({nullable: true})
     public image: string;
+
+    @Column({ nullable: true })
+    public originalTweetId: number;
+
+    @OneToOne(() => Tweet)
+    @JoinColumn()
+    originalTweet: Tweet;
 
     @ManyToOne(() => User, (user: User) => user.tweets)
     public user: User;

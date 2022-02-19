@@ -24,8 +24,6 @@ export class ProfilesService {
     const profile: Profile = {
       username: user.username,
       bio: user.bio,
-      followers: [],
-      following: []
     };
 
     // Is the current user following user

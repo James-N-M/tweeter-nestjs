@@ -4,6 +4,4 @@ export interface Profile {
     username: string;
     bio: string;
     isFollowing?: boolean;
-    followers?: User[],
-    following?: User[]
   }

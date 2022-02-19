@@ -93,6 +93,17 @@ export class TweetsController {
     return await this.tweetsService.findAllBookmarks(req.user.id);
   }
 
+  @ApiOperation({ summary: 'retweet tweet' })
+  @ApiResponse({
+    status: 201,
+    description: 'The tweet has been successfully retweeted.',
+  })
+  @Post(':id/retweet')
+  @UseGuards(JwtAuthGuard)
+  async retweet(@Param('id') id: string, @Req() req: RequestWithUser) {
+    return await this.tweetsService.retweet(parseInt(id), req.user);
+  }
+
   @ApiOperation({ summary: 'Like tweet' })
   @ApiResponse({
     status: 201,
