@@ -38,6 +38,8 @@ export class TweetsService {
         user: user
       });
 
+    await this.tweetsRepository.save(newTweet);
+
     delete newTweet.user;
 
     return newTweet;
