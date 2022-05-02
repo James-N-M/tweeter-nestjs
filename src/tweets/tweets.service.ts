@@ -16,27 +16,25 @@ export class TweetsService {
   ) {}
 
   async create(createTweetDto: CreateTweetDto, user: User) {
-    const newTweet = await this.tweetsRepository.create(
-      {
-        ...createTweetDto,
-        user: user
-      });
+    const newTweet = await this.tweetsRepository.create({
+      ...createTweetDto,
+      user: user,
+    });
     await this.tweetsRepository.save(newTweet);
 
     delete newTweet.user;
-    
+
     return newTweet;
   }
 
   async retweet(tweetId: number, user: User) {
     const tweet = await this.tweetsRepository.findOne({ id: tweetId });
 
-    const newTweet = await this.tweetsRepository.create(
-      {
-        ...tweet,
-        originalTweetId: tweetId,
-        user: user
-      });
+    const newTweet = await this.tweetsRepository.create({
+      ...tweet,
+      originalTweetId: tweetId,
+      user: user,
+    });
 
     await this.tweetsRepository.save(newTweet);
 
@@ -46,7 +44,7 @@ export class TweetsService {
   }
 
   async findAll() {
-    return await this.tweetsRepository.find({relations: ['comments']});
+    return await this.tweetsRepository.find({ relations: ['comments'] });
   }
 
   async findOne(id: number) {
@@ -62,11 +60,14 @@ export class TweetsService {
   }
 
   async like(userId: number, tweetId: number) {
-    let tweet = await this.tweetsRepository.findOne({id: tweetId});
-    const user = await this.userRepository.findOne(userId, { relations: ['tweetLikes']});
+    let tweet = await this.tweetsRepository.findOne({ id: tweetId });
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['tweetLikes'],
+    });
 
-    const isNewLike = user.tweetLikes.findIndex(_tweet => _tweet.id === tweet.id) < 0; 
-    if(isNewLike) {
+    const isNewLike =
+      user.tweetLikes.findIndex((_tweet) => _tweet.id === tweet.id) < 0;
+    if (isNewLike) {
       user.tweetLikes.push(tweet);
       tweet.likeCount++;
 
@@ -74,16 +75,20 @@ export class TweetsService {
       tweet = await this.tweetsRepository.save(tweet);
     }
 
-    return {tweet};
+    return { tweet };
   }
 
   async unLike(userId: number, tweetId: number) {
-    let tweet = await this.tweetsRepository.findOne({id: tweetId});
-    const user = await this.userRepository.findOne(userId, { relations: ['tweetLikes']});
+    let tweet = await this.tweetsRepository.findOne({ id: tweetId });
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['tweetLikes'],
+    });
 
-    const deleteIndex = user.tweetLikes.findIndex(_tweet => _tweet.id === tweet.id); 
-    
-    if(deleteIndex >= 0) {
+    const deleteIndex = user.tweetLikes.findIndex(
+      (_tweet) => _tweet.id === tweet.id,
+    );
+
+    if (deleteIndex >= 0) {
       user.tweetLikes.splice(deleteIndex, 1);
       tweet.likeCount--;
 
@@ -91,24 +96,29 @@ export class TweetsService {
       tweet = await this.tweetsRepository.save(tweet);
     }
 
-    return {tweet};
+    return { tweet };
   }
 
   async bookmark(userId: number, tweetId: number) {
-    let tweet = await this.tweetsRepository.findOne({id: tweetId});
-    const user = await this.userRepository.findOne(userId, { relations: ['bookmarks']});
+    const tweet = await this.tweetsRepository.findOne({ id: tweetId });
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['bookmarks'],
+    });
 
-    const isNewBookmark = user.bookmarks.findIndex(_tweet => _tweet.id === tweet.id) < 0; 
-    if(isNewBookmark) {
+    const isNewBookmark =
+      user.bookmarks.findIndex((_tweet) => _tweet.id === tweet.id) < 0;
+    if (isNewBookmark) {
       user.bookmarks.push(tweet);
       await this.userRepository.save(user);
     }
 
-    return {tweet};
+    return { tweet };
   }
 
   async findAllBookmarks(userId: number) {
-    const bookmarks = await (await this.userRepository.findOne(userId, { relations: ['bookmarks']})).bookmarks;
+    const bookmarks = await (
+      await this.userRepository.findOne(userId, { relations: ['bookmarks'] })
+    ).bookmarks;
 
     return bookmarks;
   }

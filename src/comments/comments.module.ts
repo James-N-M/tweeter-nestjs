@@ -11,10 +11,10 @@ import User from 'src/users/user.entity';
   imports: [
     TypeOrmModule.forFeature([Comment, User]),
     TweetsModule,
-    UsersModule
+    UsersModule,
   ],
   controllers: [CommentsController],
   providers: [CommentsService],
-  exports: [CommentsService]
+  exports: [CommentsService],
 })
 export class CommentsModule {}

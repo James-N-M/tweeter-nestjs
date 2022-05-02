@@ -26,7 +26,7 @@ export class Comment {
   @ManyToOne(() => User, (user: User) => user.comments)
   public user: User;
 
-  @Column({default: 0})
+  @Column({ default: 0 })
   likeCount: number;
 
   @CreateDateColumn()

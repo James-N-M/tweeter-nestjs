@@ -1,3 +1,3 @@
 export const jwtConstants = {
-    secret: 'secretKey', // TODO move into env variable
-  };
+  secret: 'secretKey', // TODO move into env variable
+};

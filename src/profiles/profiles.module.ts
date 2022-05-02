@@ -6,10 +6,8 @@ import User from 'src/users/user.entity';
 import { Follows } from './entities/follows.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User, Follows])
-  ],
+  imports: [TypeOrmModule.forFeature([User, Follows])],
   providers: [ProfilesService],
-  controllers: [ProfilesController]
+  controllers: [ProfilesController],
 })
 export class ProfilesModule {}

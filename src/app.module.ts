@@ -21,15 +21,15 @@ import { ProfilesModule } from './profiles/profiles.module';
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true
-      })
+        synchronize: true,
+      }),
     }),
     UsersModule,
     AuthModule,
     TweetsModule,
     CommentsModule,
-    ProfilesModule
-    ],
+    ProfilesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -32,12 +32,16 @@ export class ProfilesService {
       followingId: user.id,
     });
 
-    // following 
-    const followingIds = await (await this.followsRepository.find({ followerId: user.id })).map((record) => record.followingId);
+    // following
+    const followingIds = await (
+      await this.followsRepository.find({ followerId: user.id })
+    ).map((record) => record.followingId);
     const following = await this.userRepository.findByIds(followingIds);
 
-    // followers 
-    const followerIds = await (await this.followsRepository.find({ followingId: user.id })).map((record) => record.followerId);
+    // followers
+    const followerIds = await (
+      await this.followsRepository.find({ followingId: user.id })
+    ).map((record) => record.followerId);
     const followers = await this.userRepository.findByIds(followerIds);
 
     if (currentUserId) {
@@ -47,8 +51,8 @@ export class ProfilesService {
     return {
       profile,
       following,
-      followers
-    }
+      followers,
+    };
   }
 
   async follow(currentUser, username: string) {

@@ -38,7 +38,7 @@ export const storage = {
 @ApiTags('tweets')
 @ApiHeader({
   name: 'My Header',
-  description: 'A Custom Header'
+  description: 'A Custom Header',
 })
 @Controller('tweets')
 export class TweetsController {

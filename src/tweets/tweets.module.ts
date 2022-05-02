@@ -7,12 +7,9 @@ import User from 'src/users/user.entity';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Tweet, User]),
-    UsersModule
-  ],
+  imports: [TypeOrmModule.forFeature([Tweet, User]), UsersModule],
   controllers: [TweetsController],
   providers: [TweetsService],
-  exports: [TweetsService]
+  exports: [TweetsService],
 })
-export class TweetsModule { }
+export class TweetsModule {}
