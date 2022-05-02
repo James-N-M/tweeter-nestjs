@@ -1,17 +1,18 @@
 import {
+  Body,
   Controller,
-  Request,
   Get,
   Post,
+  Request,
   UseGuards,
-  Body,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
+import { LoginUserDto } from './auth/dto/login-user.dto';
 import RegisterDto from './auth/dto/register.dto';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
-import { LocalAuthGuard } from './auth/local-auth.guard';
 import RequestWithUser from './auth/requestWithUser.interface';
 
 @ApiTags('application')
@@ -27,15 +28,16 @@ export class AppController {
     return this.authService.register(registrationData);
   }
 
-  // DONT FORGET ABOUT CONTROLLER ROUTE NAMES /controllername/thing
-  @UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Body() loginUserDto: LoginUserDto): Promise<AccessToken> {
+    const user = await this.authService.validateUser(
+      loginUserDto.email,
+      loginUserDto.password,
+    );
+
+    return this.authService.login(user);
   }
 
-  // JWT guarded route
-  // pass value returned as authorization bearer token 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req: RequestWithUser) {

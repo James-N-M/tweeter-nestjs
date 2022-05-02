@@ -20,7 +20,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { v4 as uuidv4 } from 'uuid';
 import { diskStorage } from 'multer';
 import path = require('path');
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 export const storage = {
   storage: diskStorage({
@@ -36,6 +36,10 @@ export const storage = {
 };
 
 @ApiTags('tweets')
+@ApiHeader({
+  name: 'My Header',
+  description: 'A Custom Header'
+})
 @Controller('tweets')
 export class TweetsController {
   constructor(private readonly tweetsService: TweetsService) {}
@@ -46,7 +50,7 @@ export class TweetsController {
   @UseInterceptors(FileInterceptor('file', storage))
   create(
     @UploadedFile() file,
-    @Body() tweet: CreateTweetDto,
+    @Body('tweet') tweet: CreateTweetDto,
     @Req() req: RequestWithUser,
   ) {
     tweet.public = Boolean(tweet.public);
