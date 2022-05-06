@@ -11,14 +11,14 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async create(userData: CreateUserDto) {
-    const newUser = await this.usersRepository.create(userData);
+  async create(userData: CreateUserDto): Promise<User> {
+    const newUser: User = await this.usersRepository.create(userData);
     await this.usersRepository.save(newUser);
     return newUser;
   }
 
-  async getByEmail(email: string) {
-    const user = await this.usersRepository.findOne({ email });
+  async getByEmail(email: string): Promise<User> {
+    const user: User = await this.usersRepository.findOne({ email });
     if (user) {
       return user;
     }
@@ -28,8 +28,8 @@ export class UsersService {
     );
   }
 
-  async getById(id: number) {
-    const user = await this.usersRepository.findOne({ id });
+  async getById(id: number): Promise<User> {
+    const user: User = await this.usersRepository.findOne({ id });
     if (user) {
       return user;
     }

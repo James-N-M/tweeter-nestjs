@@ -1,7 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
+import { Repository } from 'typeorm';
+
 import User from 'src/users/user.entity';
-import { getRepository, Repository } from 'typeorm';
+
 import { Follows } from './entities/follows.entity';
 import { Profile } from './profile.interface';
 
@@ -55,7 +58,7 @@ export class ProfilesService {
     };
   }
 
-  async follow(currentUser, username: string) {
+  async follow(currentUser, username: string): Promise<Profile> {
     const followingUser = await this.userRepository.findOne({ username });
 
     if (currentUser.email === followingUser.email) {

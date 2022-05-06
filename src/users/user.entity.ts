@@ -35,15 +35,15 @@ class User {
   @OneToMany(() => Comment, (comment: Comment) => comment.user)
   public comments: Comment[];
 
-  @ManyToMany((type) => Tweet)
+  @ManyToMany(() => Tweet)
   @JoinTable()
   bookmarks: Tweet[];
 
-  @ManyToMany((type) => Tweet)
+  @ManyToMany(() => Tweet)
   @JoinTable()
   tweetLikes: Tweet[];
 
-  @ManyToMany((type) => Comment)
+  @ManyToMany(() => Comment)
   @JoinTable()
   commentLikes: Comment[];
 }

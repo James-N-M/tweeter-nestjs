@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import User from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { CreateTweetDto } from './dto/create-tweet.dto';
-import { UpdateTweetDto } from './dto/update-tweet.dto';
 import { Tweet } from './entities/tweet.entity';
 
 @Injectable()
@@ -15,8 +14,8 @@ export class TweetsService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createTweetDto: CreateTweetDto, user: User) {
-    const newTweet = await this.tweetsRepository.create({
+  async create(createTweetDto: CreateTweetDto, user: User): Promise<Tweet> {
+    const newTweet: Tweet = await this.tweetsRepository.create({
       ...createTweetDto,
       user: user,
     });
@@ -27,10 +26,10 @@ export class TweetsService {
     return newTweet;
   }
 
-  async retweet(tweetId: number, user: User) {
-    const tweet = await this.tweetsRepository.findOne({ id: tweetId });
+  async retweet(tweetId: number, user: User): Promise<Tweet> {
+    const tweet: Tweet = await this.tweetsRepository.findOne({ id: tweetId });
 
-    const newTweet = await this.tweetsRepository.create({
+    const newTweet: Tweet = await this.tweetsRepository.create({
       ...tweet,
       originalTweetId: tweetId,
       user: user,
@@ -43,23 +42,15 @@ export class TweetsService {
     return newTweet;
   }
 
-  async findAll() {
+  async findAll(): Promise<Tweet[]> {
     return await this.tweetsRepository.find({ relations: ['comments'] });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Tweet> {
     return await this.tweetsRepository.findOne({ id });
   }
 
-  update(id: number, updateTweetDto: UpdateTweetDto) {
-    return `This action updates a #${id} tweet`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} tweet`;
-  }
-
-  async like(userId: number, tweetId: number) {
+  async like(userId: number, tweetId: number): Promise<Tweet> {
     let tweet = await this.tweetsRepository.findOne({ id: tweetId });
     const user = await this.userRepository.findOne(userId, {
       relations: ['tweetLikes'],
@@ -75,10 +66,10 @@ export class TweetsService {
       tweet = await this.tweetsRepository.save(tweet);
     }
 
-    return { tweet };
+    return tweet;
   }
 
-  async unLike(userId: number, tweetId: number) {
+  async unLike(userId: number, tweetId: number): Promise<Tweet> {
     let tweet = await this.tweetsRepository.findOne({ id: tweetId });
     const user = await this.userRepository.findOne(userId, {
       relations: ['tweetLikes'],
@@ -96,10 +87,10 @@ export class TweetsService {
       tweet = await this.tweetsRepository.save(tweet);
     }
 
-    return { tweet };
+    return tweet;
   }
 
-  async bookmark(userId: number, tweetId: number) {
+  async bookmark(userId: number, tweetId: number): Promise<Tweet> {
     const tweet = await this.tweetsRepository.findOne({ id: tweetId });
     const user = await this.userRepository.findOne(userId, {
       relations: ['bookmarks'],
@@ -112,10 +103,10 @@ export class TweetsService {
       await this.userRepository.save(user);
     }
 
-    return { tweet };
+    return tweet;
   }
 
-  async findAllBookmarks(userId: number) {
+  async findAllBookmarks(userId: number): Promise<Tweet[]> {
     const bookmarks = await (
       await this.userRepository.findOne(userId, { relations: ['bookmarks'] })
     ).bookmarks;

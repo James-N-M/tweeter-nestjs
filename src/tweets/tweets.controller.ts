@@ -1,27 +1,34 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  Param,
+  Post,
   Req,
-  UseInterceptors,
   UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { TweetsService } from './tweets.service';
-import { CreateTweetDto } from './dto/create-tweet.dto';
-import { UpdateTweetDto } from './dto/update-tweet.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+
+import { diskStorage } from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import RequestWithUser from 'src/auth/requestWithUser.interface';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { v4 as uuidv4 } from 'uuid';
-import { diskStorage } from 'multer';
-import path = require('path');
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { CreateTweetDto } from './dto/create-tweet.dto';
+import { TweetsService } from './tweets.service';
+
+import path = require('path');
+import { Tweet } from './entities/tweet.entity';
 export const storage = {
   storage: diskStorage({
     destination: './uploads/tweetimages',
@@ -36,10 +43,7 @@ export const storage = {
 };
 
 @ApiTags('tweets')
-@ApiHeader({
-  name: 'My Header',
-  description: 'A Custom Header',
-})
+@ApiBearerAuth()
 @Controller('tweets')
 export class TweetsController {
   constructor(private readonly tweetsService: TweetsService) {}
@@ -50,9 +54,9 @@ export class TweetsController {
   @UseInterceptors(FileInterceptor('file', storage))
   create(
     @UploadedFile() file,
-    @Body('tweet') tweet: CreateTweetDto,
+    @Body() tweet: CreateTweetDto,
     @Req() req: RequestWithUser,
-  ) {
+  ): Promise<Tweet> {
     tweet.public = Boolean(tweet.public);
 
     if (file) {
@@ -64,18 +68,8 @@ export class TweetsController {
   @Get()
   @ApiOperation({ summary: 'Get all tweets' })
   @ApiResponse({ status: 200, description: 'Return all tweets.' })
-  findAll() {
+  findAll(): Promise<Tweet[]> {
     return this.tweetsService.findAll();
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTweetDto: UpdateTweetDto) {
-    return this.tweetsService.update(+id, updateTweetDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tweetsService.remove(+id);
   }
 
   @ApiOperation({ summary: 'Bookmark tweet' })
@@ -85,7 +79,10 @@ export class TweetsController {
   })
   @Post(':id/bookmark')
   @UseGuards(JwtAuthGuard)
-  async bookmark(@Param('id') id: string, @Req() req: RequestWithUser) {
+  async bookmark(
+    @Param('id') id: string,
+    @Req() req: RequestWithUser,
+  ): Promise<Tweet> {
     return await this.tweetsService.bookmark(req.user.id, parseInt(id));
   }
 
@@ -93,7 +90,7 @@ export class TweetsController {
   @ApiOperation({ summary: 'Get all current user bookmarks' })
   @ApiResponse({ status: 200, description: 'Return all bookmarked tweets.' })
   @UseGuards(JwtAuthGuard)
-  async bookmarks(@Req() req: RequestWithUser) {
+  async bookmarks(@Req() req: RequestWithUser): Promise<Tweet[]> {
     return await this.tweetsService.findAllBookmarks(req.user.id);
   }
 
@@ -104,7 +101,10 @@ export class TweetsController {
   })
   @Post(':id/retweet')
   @UseGuards(JwtAuthGuard)
-  async retweet(@Param('id') id: string, @Req() req: RequestWithUser) {
+  async retweet(
+    @Param('id') id: string,
+    @Req() req: RequestWithUser,
+  ): Promise<Tweet> {
     return await this.tweetsService.retweet(parseInt(id), req.user);
   }
 
@@ -115,7 +115,10 @@ export class TweetsController {
   })
   @Post(':id/like')
   @UseGuards(JwtAuthGuard)
-  async like(@Param('id') id: string, @Req() req: RequestWithUser) {
+  async like(
+    @Param('id') id: string,
+    @Req() req: RequestWithUser,
+  ): Promise<Tweet> {
     return await this.tweetsService.like(req.user.id, parseInt(id));
   }
 
@@ -126,7 +129,10 @@ export class TweetsController {
   })
   @Delete(':id/unlike')
   @UseGuards(JwtAuthGuard)
-  async unLike(@Param('id') id: string, @Req() req: RequestWithUser) {
+  async unLike(
+    @Param('id') id: string,
+    @Req() req: RequestWithUser,
+  ): Promise<Tweet> {
     return await this.tweetsService.unLike(req.user.id, parseInt(id));
   }
 }

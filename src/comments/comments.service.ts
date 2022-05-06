@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
+import { Repository } from 'typeorm';
+
 import { TweetsService } from 'src/tweets/tweets.service';
 import User from 'src/users/user.entity';
-import { Repository } from 'typeorm';
+
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from './entities/comment.entity';
 
 @Injectable()
@@ -17,7 +19,10 @@ export class CommentsService {
     private tweetsService: TweetsService,
   ) {}
 
-  async create(createCommentDto: CreateCommentDto, user: User) {
+  async create(
+    createCommentDto: CreateCommentDto,
+    user: User,
+  ): Promise<Comment> {
     const tweet = await this.tweetsService.findOne(createCommentDto.tweetId);
 
     const newComment = await this.commentsRepository.create({
@@ -31,7 +36,7 @@ export class CommentsService {
     return newComment;
   }
 
-  async like(userId: number, commentId: number) {
+  async like(userId: number, commentId: number): Promise<Comment> {
     let comment = await this.commentsRepository.findOne({ id: commentId });
     const user = await this.userRepository.findOne(userId, {
       relations: ['commentLikes'],
@@ -48,10 +53,10 @@ export class CommentsService {
       comment = await this.commentsRepository.save(comment);
     }
 
-    return { comment };
+    return comment;
   }
 
-  async unLike(userId: number, commentId: number) {
+  async unLike(userId: number, commentId: number): Promise<Comment> {
     let comment = await this.commentsRepository.findOne({ id: commentId });
     const user = await this.userRepository.findOne(userId, {
       relations: ['commentLikes'],
@@ -69,22 +74,6 @@ export class CommentsService {
       comment = await this.commentsRepository.save(comment);
     }
 
-    return { comment };
-  }
-
-  findAll() {
-    return `This action returns all comments`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
-  }
-
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+    return comment;
   }
 }
