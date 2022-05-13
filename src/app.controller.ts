@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { AccessToken } from './auth/accessToken.interface';
 import { AuthService } from './auth/auth.service';
 import { LoginUserDto } from './auth/dto/login-user.dto';
 import RegisterDto from './auth/dto/register.dto';

@@ -6,7 +6,9 @@ import * as bcrypt from 'bcrypt';
 import User from 'src/users/user.entity';
 
 import { UsersService } from '../users/users.service';
+import { AccessToken } from './accessToken.interface';
 import RegisterDto from './dto/register.dto';
+import { TokenPayload } from './tokenPayload.interface';
 
 @Injectable()
 export class AuthService {

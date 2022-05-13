@@ -7,6 +7,7 @@ import User from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 
 import { jwtConstants } from './constants';
+import { TokenPayload } from './tokenPayload.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
